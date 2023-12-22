@@ -1,0 +1,48 @@
+{#-   Inspired by https://github.com/saltstack-formulas/openssh-formula
+      This currently cannot be overridden with files_switch since it's rendered in Jinja.
+-#}
+{%- set collapse_opts = [
+      "DenyUsers", "AllowUsers", "DenyGroups", "AllowGroups", "KexAlgorithms",
+      "Ciphers", "MACs", "PubkeyAcceptedAlgorithms", "PubkeyAcceptedKeyTypes", "CASignatureAlgorithms",
+      "HostKeyAlgorithms",
+    ]
+-%}
+
+{%- macro render_opt(name, val, collapse=false) %}
+{%-   if val is sameas true -%}
+{{ name }} yes
+{%-   elif val is sameas false -%}
+{{ name }} no
+{%-   elif val is string or val is number -%}
+{{ name }} {{ val }}
+{%-   elif val | is_list -%}
+{%-     if name in collapse_opts or collapse -%}
+{{ name }} {{ val | join(",") }}
+{%-     else -%}
+{%-       for v in val %}
+{%-         if loop.first %}
+{{- render_opt(name, v) }}
+{%-         else %}
+{{ render_opt(name, v) }}
+{%-         endif %}
+{%-       endfor -%}
+{%-     endif -%}
+{%-   endif -%}
+{%- endmacro -%}
+
+{% for opt, val in truenas.sshd.config | dictsort %}
+{%-   if opt in ["Host", "Match"] %}
+{%-     continue %}
+{%-   endif %}
+{{ render_opt(opt, val) }}
+{%- endfor %}
+
+{% for name, match in truenas.sshd.config.get("Match", {}) %}
+Match
+{%-   for match_type, vals in match["type"] | dictsort -%}
+      {{ " " -}} {{ render_opt(match_type, vals, collapse=true) }}
+{%-   endfor %}  # {{ name }}
+{%-   for opt, val in match["options"] | dictsort %}
+{{ "  " }}{{ render_opt(opt, val) }}
+{%-   endfor %}
+{% endfor %}

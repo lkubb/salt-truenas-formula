@@ -1,0 +1,11 @@
+{#- Autoconfigure SSH certificates #}
+{%- set certs = [] %}
+{%- for key_type, config in mapdata.sshd["keys"].items() %}
+{%-   if config.get("cert") %}
+{%-     set filename = mapdata.lookup.sshd.config | path_join("ssh_host_" ~ key_type ~ "_key.crt") %}
+{%-     do certs.append(filename) %}
+{%-   endif %}
+{%- endfor %}
+{%- if certs %}
+{%-   do mapdata.sshd.config.update({"HostCertificate": certs}) %}
+{%- endif %}

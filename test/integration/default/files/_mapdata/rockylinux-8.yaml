@@ -1,0 +1,103 @@
+# yamllint disable rule:indentation rule:line-length
+# Rocky Linux-8
+---
+values:
+  added_in_defaults: defaults_value
+  added_in_lookup: lookup_value
+  added_in_pillar: pillar_value
+  lookup:
+    arch: amd64
+    rootgroup: root
+    certs:
+      workdir: /opt/certs
+    sshd:
+      config: /usr/local/etc/ssh
+    telegraf:
+      rcfile: /usr/local/etc/rc.d/telegraf
+      source: https://dl.influxdata.com/telegraf/releases/telegraf-{release}_freebsd_amd64.tar.gz
+  certs:
+    - ca_server: null
+      certificate_managed:
+        authorityKeyIdentifier: keyid:always
+        basicConstraints: critical, CA:false
+        days_remaining: 7
+        days_valid: 30
+        subjectKeyIdentifier: hash
+      name: ''
+      private_key_managed:
+        algo: rsa
+        keysize: 3072
+        new: true
+      services: []
+      signing_policy: null
+  minio:
+    cert:
+      ca_server: null
+      certificate_managed:
+        authorityKeyIdentifier: keyid:always
+        basicConstraints: critical, CA:false
+        days_remaining: 7
+        days_valid: 30
+        subjectKeyIdentifier: hash
+      private_key_managed:
+        algo: rsa
+        keysize: 3072
+        new: true
+      signing_policy: null
+    jail_name: minio
+  sshd:
+    authorized_keys: {}
+    authorized_principals: {}
+    cert_params:
+      all_principals: false
+      backend: null
+      backend_args: null
+      ca_server: null
+      signing_policy: null
+      ttl: null
+      ttl_remaining: null
+      valid_principals: null
+    config: {}
+    config_truenas: {}
+    keys:
+      dsa:
+        manage: true
+        present: false
+      ecdsa:
+        manage: true
+        present: true
+      ed25519:
+        manage: true
+        present: true
+      rsa:
+        keysize: 2048
+        manage: true
+        present: true
+    trusted_user_ca_keys: []
+  telegraf:
+    config: {}
+    dest: null
+    source_hash: a0748d1a3859602b7b23ff098e9119f75c4c20f3fda4b0c4a47550a7fd975ac1
+    tls_ca: null
+    version: 1.29.1
+  map_jinja:
+    sources:
+    - Y:G@osarch
+    - Y:G@os_family
+    - Y:G@os
+    - Y:G@osfinger
+    - C@truenas
+    - Y:G@id
+  master: template-master
+  tofs:
+    files_switch:
+    - any/path/can/be/used/here
+    - id
+    - roles
+    - osfinger
+    - os
+    - os_family
+    source_files:
+      truenas-config-file-file-managed:
+      - example.tmpl.jinja
+  winner: pillar

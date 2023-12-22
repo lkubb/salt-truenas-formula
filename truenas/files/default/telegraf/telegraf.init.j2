@@ -1,0 +1,40 @@
+#!/bin/sh
+# $FreeBSD$
+
+# PROVIDE: telegraf
+# REQUIRE: DAEMON NETWORKING
+# BEFORE: LOGIN
+# KEYWORD: shutdown
+
+# This file was sourced from
+# https://github.com/samuelkadolph/truenas-telegraf/blob/main/telegraf.init
+
+. /etc/rc.subr
+
+name=telegraf
+path="$(dirname "$(readlink -f "$0")")"
+bin_path="${path}/pkg/telegraf-{{ truenas.telegraf.version }}/usr/bin/telegraf"
+rcvar=telegraf_enable
+
+load_rc_config $name
+
+start_precmd=telegraf_prestart
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
+
+: ${telegraf_conf="${path}/${name}.conf"}
+: ${telegraf_confd="${path}/${name}.d"}
+: ${telegraf_enable="YES"}
+: ${telegraf_flags="--quiet"}
+: ${telegraf_logfile="/var/log/${name}.log"}
+: ${telegraf_pidfile="/var/run/${name}.pid"}
+
+# daemon
+command=/usr/sbin/daemon
+command_args="-crP ${telegraf_pidfile} "${bin_path}" ${telegraf_flags} --config="${telegraf_conf}" --config-directory="${telegraf_confd}" >>${telegraf_logfile} 2>>${telegraf_logfile}"
+pidfile="${telegraf_pidfile}"
+
+telegraf_prestart() {
+  rc_flags=""
+}
+
+run_rc_command "$1"

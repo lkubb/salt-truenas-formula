@@ -1,0 +1,12 @@
+{%- for ppl in principals %}
+{%-   if ppl is string %}
+{{ ppl }}
+{%   elif ppl is mapping %}
+{%-     for opt, val in ppl.get("options", {}) | dictsort %}
+{%-       if val is equalto true %}{{ opt }}
+{%-       elif val is string %}{{ opt }}="{{ val }}"
+{%-       elif val is mapping %}{%- for k, v in val | dictsort %}{{ opt }}="{{ k }}={{ v }}"{%- if not loop.last %},{%- endif %}{%- endfor %}
+{%-       endif %}{%- if not loop.last %},{%- endif %}
+{%-     endfor %}{%- if ppl.get("options") %} {% endif %}{{ ppl.user }}
+{%-   endif %}
+{%- endfor %}

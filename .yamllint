@@ -1,0 +1,16 @@
+# vim: ft=yaml
+---
+# Extend the `default` configuration provided by `yamllint`
+extends: 'default'
+
+rules:
+  empty-values:
+    forbid-in-block-mappings: true
+    forbid-in-flow-mappings: true
+  line-length:
+    # Increase from default of `80`
+    # Based on https://github.com/PyCQA/flake8-bugbear#opinionated-warnings (`B950`)
+    max: 88
+  octal-values:
+    forbid-implicit-octal: true
+    forbid-explicit-octal: true

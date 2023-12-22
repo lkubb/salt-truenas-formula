@@ -1,0 +1,128 @@
+{
+  "template": "https://github.com/lkubb/salt-template-formula",
+  "commit": "9b606718e0a9bce02686a499fea4fbc927c8933d",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "_extensions": [
+        "local_extensions.YAMLDumper"
+      ],
+      "_jinja2_env_vars": {
+        "block_start_string": "{!",
+        "block_end_string": "!}",
+        "variable_start_string": "{=",
+        "variable_end_string": "=}",
+        "comment_start_string": "{@",
+        "comment_end_string": "@}"
+      },
+      "name": "TrueNAS",
+      "abbr": "truenas",
+      "abbr_pysafe": "truenas",
+      "pkg": "",
+      "needs_repo": "",
+      "config": "",
+      "service": "",
+      "subcomponent": "",
+      "subcomponent_config": "",
+      "git_username": "lkubb",
+      "lookup": {
+        "certs": {
+          "workdir": "/opt/certs"
+        },
+        "sshd": {
+          "config": "/usr/local/etc/ssh"
+        },
+        "telegraf": {
+          "rcfile": "/usr/local/etc/rc.d/telegraf",
+          "source": "https://dl.influxdata.com/telegraf/releases/telegraf-{release}_freebsd_amd64.tar.gz"
+        }
+      },
+      "settings": {
+        "certs": [
+          {
+            "name": "",
+            "services": [],
+            "ca_server": null,
+            "signing_policy": null,
+            "certificate_managed": {
+              "days_remaining": 7,
+              "days_valid": 30,
+              "authorityKeyIdentifier": "keyid:always",
+              "basicConstraints": "critical, CA:false",
+              "subjectKeyIdentifier": "hash"
+            },
+            "private_key_managed": {
+              "algo": "rsa",
+              "keysize": 3072,
+              "new": true
+            }
+          }
+        ],
+        "minio": {
+          "cert":{
+            "ca_server": null,
+            "signing_policy": null,
+            "certificate_managed": {
+              "days_remaining": 7,
+              "days_valid": 30,
+              "authorityKeyIdentifier": "keyid:always",
+              "basicConstraints": "critical, CA:false",
+              "subjectKeyIdentifier": "hash"
+            },
+            "private_key_managed": {
+              "algo": "rsa",
+              "keysize": 3072,
+              "new": true
+            }
+          },
+          "jail_name": "minio"
+        },
+        "sshd": {
+          "authorized_keys": {},
+          "authorized_principals": {},
+          "cert_params": {
+            "backend": null,
+            "backend_args": null,
+            "ca_server": null,
+            "signing_policy": null,
+            "ttl": null,
+            "ttl_remaining": null,
+            "valid_principals": null,
+            "all_principals": false
+          },
+          "config": {},
+          "config_truenas": {},
+          "keys": {
+            "dsa": {
+              "manage": true,
+              "present": false
+            },
+            "ecdsa": {
+              "manage": true,
+              "present": true
+            },
+            "ed25519": {
+              "manage": true,
+              "present": true
+            },
+            "rsa": {
+              "manage": true,
+              "present": true,
+              "keysize": 2048
+            }
+          },
+          "trusted_user_ca_keys": []
+        },
+        "telegraf": {
+          "config": {},
+          "dest": null,
+          "source_hash": "a0748d1a3859602b7b23ff098e9119f75c4c20f3fda4b0c4a47550a7fd975ac1",
+          "tls_ca": null,
+          "version": "1.29.1"
+        }
+      },
+      "_template": "https://github.com/lkubb/salt-template-formula"
+    }
+  },
+  "directory": null
+}
