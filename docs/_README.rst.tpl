@@ -43,7 +43,8 @@ If you need (non-default) configuration, please refer to:
 
 Special notes
 -------------
-
+* This formula is intended to be executed via ``salt-ssh``.
+* It currently relies heavily on wrapper modules that are not yet part of Salt core, but are submitted in several of my PRs.
 
 Configuration
 -------------
@@ -124,3 +125,11 @@ Runs all of the stages above in one go: i.e. ``destroy`` + ``converge`` + ``veri
 ^^^^^^^^^^^^^^^^^^^^^
 
 Gives you SSH access to the instance for manual testing.
+
+References
+----------
+* https://github.com/arensb/ansible-truenas
+* https://github.com/samuelkadolph/truenas-telegraf
+* https://github.com/danb35/deploy-freenas
+* https://www.truenas.com/docs/api/core_websocket_api.htm
+* https://github.com/truenas/middleware
