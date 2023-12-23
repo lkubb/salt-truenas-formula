@@ -18,7 +18,7 @@
 
 {%- if truenas.minio.cert.ca_server %}
 {%-   set pk_managed = salt["defaults.deepcopy"](truenas.minio.cert.private_key_managed) %}
-{%-   do pk_managed.update({"name": key_file, "user": "minio", "group": "minio", "mode": "0640"}) %}
+{%-   do pk_managed.update({"name": key_file, "user": "minio", "group": "minio", "mode": "0600"}) %}
 {%-   set cert_managed = salt["defaults.deepcopy"](truenas.minio.cert.certificate_managed) %}
 {%-   do cert_managed.update({"user": "minio", "group": "minio"}) %}
 {{
