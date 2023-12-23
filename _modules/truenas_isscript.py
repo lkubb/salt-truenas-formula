@@ -26,7 +26,15 @@ def __virtual__():
 
 
 def list_():
-    # ensure we don't get paged results
+    """
+    List scripts.
+
+    CLI Example:
+
+    .. code-block:: bash
+
+        salt-ssh '*' truenas_isscript.list
+    """
     options = {"limit": 0}
     with tn.get_client(__opts__, __context__) as client:
         res = client.call("initshutdownscript.query", [], options)
@@ -36,6 +44,34 @@ def list_():
 def create(
     data, typ="COMMAND", when="POSTINIT", comment=None, enabled=True, timeout=None
 ):
+    """
+    Create a script.
+
+    .. code-block:: bash
+
+        salt-ssh '*' truenas_isscript.create 'echo foo' comment='Log dumb notification'
+
+    data
+        The data for the script. If ``typ`` is ``COMMAND``, the command to run.
+        If ``typ`` is ``SCRIPT``, the path of the script or the script text to run.
+
+    typ
+        The type to create. ``COMMAND`` or ``SCRIPT``. Defaults to ``COMMAND``.
+
+    when
+        When the script should be run. Valid: ``PREINIT``, ``POSTINIT``, ``SHUTDOWN``.
+        Defaults to ``POSTINIT``.
+
+    comment
+        A comment describing the script. This comment is used to track scripts
+        in the ``truenas_isscript`` modules. Optional.
+
+    enabled
+        Whether the script should be enabled after creation. Defaults to true.
+
+    timeout
+        The timeout for the script. Optional.
+    """
     typ, when = typ.upper(), when.upper()
     if typ not in TYPES:
         raise SaltInvocationError(f"Unknown type: '{typ}'. Valid: {', '.join(TYPES)}")
@@ -58,6 +94,40 @@ def update(
     enabled=None,
     timeout=None,
 ):
+    """
+    Update a script.
+
+    .. code-block:: bash
+
+        salt-ssh '*' truenas_isscript.update 'Log dumb notification' data='echo hey'
+
+    find
+        A string that's part of the script's comment. Either this or ``id`` is required.
+
+    id
+        The ID of the script to update.
+
+    data
+        The data for the script. If ``typ`` is ``COMMAND``, the command to run.
+        If ``typ`` is ``SCRIPT``, the path of the script or the script text to run.
+
+    typ
+        The type to create. ``COMMAND`` or ``SCRIPT``. Defaults to ``COMMAND``.
+
+    when
+        When the script should be run. Valid: ``PREINIT``, ``POSTINIT``, ``SHUTDOWN``.
+        Defaults to ``POSTINIT``.
+
+    comment
+        A comment describing the script. This comment is used to track scripts
+        in the ``truenas_isscript`` modules. Optional.
+
+    enabled
+        Whether the script should be enabled after creation. Defaults to true.
+
+    timeout
+        The timeout for the script. Optional.
+    """
     id = _find_iss(find=find, id=id)
     args = _args(
         data, typ=typ, when=when, comment=comment, enabled=enabled, timeout=timeout
@@ -67,6 +137,19 @@ def update(
 
 
 def delete(find=None, id=None):
+    """
+    Delete a script.
+
+    .. code-block:: bash
+
+        salt-ssh '*' truenas_isscript.delete 'Log dumb notification'
+
+    find
+        A string that's part of the script's comment. Either this or ``id`` is required.
+
+    id
+        The ID of the script to update.
+    """
     id = _find_iss(find=find, id=id)
     with tn.get_client(__opts__, __context__) as client:
         return client.call("initshutdownscript.delete", id)

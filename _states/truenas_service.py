@@ -15,7 +15,7 @@ def __virtual__():
     try:
         __salt__["truenas_service.get_all"]
     except KeyError:
-        return False, "Did not find truenas_service execution module"
+        return False, "`truenas_service` execution module not found"
     return __virtualname__
 
 

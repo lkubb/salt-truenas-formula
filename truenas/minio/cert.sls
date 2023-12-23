@@ -62,10 +62,18 @@
 {%-   endif %}
 {%- endif %}
 
+MinIO jail is running:
+  truenas_jail.running:
+    - name: {{ truenas.minio.jail_name }}
+    - watch:
+      - x509: {{ crt_file }}
+
+# Just a check now, restarting the service alone was not sufficient
+# to refresh the certificate somehow.
 MinIO service is running:
   service.running:
     - name: minio
     - enable: true
     - jail: {{ minio_jid }}
-    - watch:
-      - x509: {{ crt_file }}
+    - require:
+      - MinIO jail is running

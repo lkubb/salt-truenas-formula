@@ -32,6 +32,13 @@ def list_(name_prefix=None, order_by="name", include_private_key=False):
 
         salt-ssh '*' truenas_cert.list
 
+    name_prefix
+        Filter certificates by name prefix.
+
+    order_by
+        Order returned list by this named value.
+        Defaults to ``name``.
+
     include_private_key
         Include the private key contents. Defaults to false.
     """
