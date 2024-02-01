@@ -75,6 +75,9 @@ Certificate {{ cert.name }} is imported in TrueNAS:
     - name: {{ cert.name }}
     - certificate: {{ crt_file }}
     - private_key: {{ key_file }}
+{%-   if cert.certificate_managed.get("append_certs") %}
+    - append_certs: {{ cert.certificate_managed.append_certs | json }}
+{%-   endif %}
     - require:
       - x509: {{ crt_file }}
       - x509: {{ key_file }}
