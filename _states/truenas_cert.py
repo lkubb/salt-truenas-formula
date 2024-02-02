@@ -62,12 +62,21 @@ def imported(name, certificate, private_key, append_certs=None, clean=True):
         Remove expired certificate with the same name prefix.
         Defaults to true.
     """
+
+    def list_expired(certs):
+        expired = []
+        for cert in certs:
+            if __salt__["x509.expires"](cert["certificate"]):
+                expired.append(cert["name"])
+        return expired
+
     ret = {
         "name": name,
         "result": True,
         "comment": "The certificate has already been imported",
         "changes": {},
     }
+    expired = []
     try:
         try:
             wanted = __salt__["x509.encode_certificate"](
@@ -93,9 +102,13 @@ def imported(name, certificate, private_key, append_certs=None, clean=True):
         else:
             verb = "import"
         ret["changes"][f"{verb}ed"] = actual_name
+        if clean:
+            expired = list_expired(certs)
         if __opts__["test"]:
             ret["result"] = None
             ret["comment"] = f"The certificate would have been {verb}ed"
+            if expired:
+                ret["changes"]["cleaned"] = expired
             return ret
         __salt__["truenas_cert.import"](
             actual_name, certificate, private_key, append_certs=append_certs
@@ -113,7 +126,17 @@ def imported(name, certificate, private_key, append_certs=None, clean=True):
                 "Certificate was imported, but it did not match what was expected"
             )
         ret["comment"] = f"The certificate has been {verb}ed"
-        # TODO clean
+        failed = {}
+        for cert in expired:
+            try:
+                __salt__["truenas_cert.delete"](cert)
+            except Exception as err:  # pylint: disable=broad-except
+                log.error(str(err))
+                failed[cert] = str(err)
+        if failed:
+            # We don't want to fail this state since the import worked
+            for cert, reason in failed.items():
+                ret["comment"] += "\n" + f"Error for '{cert}': {reason}"
     except (CommandExecutionError, SaltInvocationError) as err:
         ret["result"] = False
         ret["comment"] = str(err)

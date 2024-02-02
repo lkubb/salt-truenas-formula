@@ -120,7 +120,7 @@ def delete(name):
         return client.job("certificate.delete", cert["id"])
 
 
-def clean():
+def clean(name_prefix=None):
     """
     Remove expired certificates.
 
@@ -130,10 +130,10 @@ def clean():
 
         salt-ssh '*' truenas_cert.clean
     """
-    certs = list_()
+    certs = list_(name_prefix)
     remove = []
     for cert in certs:
-        if __salt__["x509.expired"](cert["certificate"]):
+        if __salt__["x509.expires"](cert["certificate"]):
             remove.append(cert["id"])
     with tn.get_client(__opts__, __context__) as client:
         for rm in remove:
