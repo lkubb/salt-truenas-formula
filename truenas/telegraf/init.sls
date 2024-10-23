@@ -46,6 +46,7 @@ Telegraf initfile is present:
     - mode: '0755'
     - require:
       - file: {{ truenas.telegraf.dest }}
+      - Telegraf is extracted
 
 {%- if truenas.telegraf.tls_ca %}
 
@@ -84,9 +85,15 @@ Telegraf init script is registered and running:
     - timeout: 30
     - require:
       - Telegraf config is managed
+      - Telegraf initfile is present
 
 Telegraf is running:
   service.running:
     - name: telegraf
+{%- if not salt["file.file_exists"](truenas.telegraf.dest | path_join("telegraf.init")) %}
+    - require:
+      - Telegraf initfile is present
+{%- endif %}
     - watch:
       - Telegraf config is managed
+      - Telegraf is extracted
